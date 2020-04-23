@@ -1,0 +1,17 @@
+{
+  "name": "UdaciCards",
+  "displayName": "UdaciCards",
+  "expo": {
+    "name": "UdaciCards",
+    "slug": "UdaciCards",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
