@@ -1,7 +1,6 @@
 import "react-native-gesture-handler";
 import React from "react";
 import {
-  Root,
   FooterTab,
   Footer,
   Text,
@@ -12,17 +11,20 @@ import {
   Body,
   Title,
   Right,
+  Container,
 } from "native-base";
 import { createStackNavigator } from "@react-navigation/stack";
-import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { StatusBar, Platform, StyleSheet } from "react-native";
+import { StyleSheet, StatusBar } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import AddDeck from "../screens/AddDeckScreen";
 import AddQuestion from "../screens/AddQuestionScreen";
 import DeckDetails from "../screens/DeckDetailsScreen";
 import Quiz from "../screens/QuizScreen";
 import Home from "../screens/HomeScreen";
+import { white, grey } from "../utils/colors";
 
 const AppNavigator = createStackNavigator();
 const TabNavigator = createBottomTabNavigator();
@@ -30,50 +32,56 @@ const TabNavigator = createBottomTabNavigator();
 const BottomNavigation = ({ state, descriptors, navigation }) => {
   return (
     <Footer>
-      <FooterTab>
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-              ? options.title
-              : route.name;
+      <LinearGradient colors={["#141e30", "#243b55"]} style={styles.gradient}>
+        <FooterTab>
+          {state.routes.map((route, index) => {
+            const { options } = descriptors[route.key];
+            const label =
+              options.tabBarLabel !== undefined
+                ? options.tabBarLabel
+                : options.title !== undefined
+                ? options.title
+                : route.name;
 
-          const isFocused = state.index === index;
+            const isFocused = state.index === index;
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-            });
+            const onPress = () => {
+              const event = navigation.emit({
+                type: "tabPress",
+                target: route.key,
+              });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name);
-            }
-          };
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name);
+              }
+            };
 
-          const onLongPress = () => {
-            navigation.emit({
-              type: "tabLongPress",
-              target: route.key,
-            });
-          };
+            const onLongPress = () => {
+              navigation.emit({
+                type: "tabLongPress",
+                target: route.key,
+              });
+            };
 
-          return (
-            <Button
-              active={isFocused}
-              vertical
-              onPress={onPress}
-              onLongPress={onLongPress}
-              key={index}
-            >
-              <Icon ios={options.iosIcon} android={options.mdIcon} />
-              <Text>{label}</Text>
-            </Button>
-          );
-        })}
-      </FooterTab>
+            return (
+              <Button
+                vertical
+                onPress={onPress}
+                onLongPress={onLongPress}
+                key={index}
+                style={{ color: isFocused ? white : grey }}
+              >
+                <Icon
+                  ios={options.iosIcon}
+                  android={options.mdIcon}
+                  style={{ color: isFocused ? white : grey }}
+                />
+                <Text style={{ color: isFocused ? white : grey }}>{label}</Text>
+              </Button>
+            );
+          })}
+        </FooterTab>
+      </LinearGradient>
     </Footer>
   );
 };
@@ -82,7 +90,8 @@ const AppStack = () => {
   return (
     <AppNavigator.Navigator
       initialRouteName={"Home"}
-      options={{
+      headerMode="screen"
+      screenOptions={{
         header: ({ scene, previous, navigation }) => {
           const { options } = scene.descriptor;
           const title =
@@ -90,22 +99,41 @@ const AppStack = () => {
               ? options.headerTitle
               : options.title !== undefined
               ? options.title
-              : scene.route.name;
+              : scene.route.name;          
 
           return (
-            <Header style={options.headerStyle}>
-              <Left>
-                {previous ? (
-                  <Button transparent onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-back" />
-                  </Button>
-                ) : null}
-              </Left>
-              <Body>
-                <Title>{title}</Title>
-              </Body>
-              <Right />
-            </Header>
+            <LinearGradient colors={["#141e30", "#243b55"]}>
+              <Header
+                style={[
+                  options.headerStyle,
+                  { marginTop: StatusBar.currentHeight },
+                ]}
+              >
+                <Left>
+                  {previous ? (
+                    <Button transparent onPress={() => navigation.goBack()}>
+                      <Icon name="arrow-back" style={{color: white}}/>
+                    </Button>
+                  ) : null}
+                </Left>
+                <Body>
+                  <Title style={{ color: white }}>{title}</Title>
+                </Body>
+                {title === "Home" ? (
+                  <Right>
+                    <Button transparent>
+                      <Icon
+                        ios="ios-reorder"
+                        android="md-reorder"
+                        style={styles.btnFilter}
+                      />
+                    </Button>
+                  </Right>
+                ) : (
+                  <Right />
+                )}
+              </Header>
+            </LinearGradient>
           );
         },
       }}
@@ -120,7 +148,16 @@ const AppStack = () => {
           headerTintColor: "#FFF",
         }}
       />
-      <AppNavigator.Screen name={"Deck Details"} component={DeckDetails} />
+      <AppNavigator.Screen
+        name={"Deck Details"}
+        component={DeckDetails}
+        options={{
+          headerStyle: {
+            ...styles.homeHeaderStyle,
+          },
+          headerTintColor: "#FFF",
+        }}
+      />
       <AppNavigator.Screen name={"Add Question"} component={AddQuestion} />
       <AppNavigator.Screen name={"Quiz"} component={Quiz} />
     </AppNavigator.Navigator>
@@ -157,6 +194,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   homeHeaderStyle: {
-    backgroundColor: "#000",
+    backgroundColor: "transparent",
+    height: 60,
   },
+  gradient: {
+    flex: 1,
+  },
+  btnFilter: { color: white, fontSize: 30, fontWeight: "700" },
 });
