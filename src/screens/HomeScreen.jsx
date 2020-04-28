@@ -1,13 +1,8 @@
 import React, { Component } from "react";
-import {
-  Container,
-  Content,
-  Text,
-  Button,
-  ListItem,
-  Spinner,
-  Left,
-  Body,
+import {  
+  Text,  
+  ListItem,  
+  Body,  
 } from "native-base";
 import {
   StyleSheet,
@@ -17,9 +12,10 @@ import {
   FlatList,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import { View } from "react-native";
 import DeckCard from "../components/DeckCard";
-import { white } from "../utils/colors";
+import { white, light_dark } from "../utils/colors";
+import Spinner from "../components/Loader";
+//import Constants from "expo-constants"
 
 const datas = {
   React: {
@@ -95,11 +91,11 @@ function HomeEffect() {
   useFocusEffect(
     React.useCallback(() => {
       StatusBar.setBarStyle("light-content");
-      Platform.OS === "android" && StatusBar.setBackgroundColor("#ecf0f1");
+      Platform.OS === "android" && StatusBar.setBackgroundColor("transparent");
     }, [])
   );
 
-  return null;
+  return <StatusBar barStyle="light-content" backgroundColor="transparent" />;
 }
 
 class HomeScreen extends Component {
@@ -120,7 +116,7 @@ class HomeScreen extends Component {
       this.setState({
         isLoading: false,
       });
-    }, 3000);
+    }, 1000);
   }
 
   renderItem = ({ item }) => {
@@ -148,7 +144,7 @@ class HomeScreen extends Component {
       return (
         <>
           <HomeEffect />
-          <Spinner style={styles.spinner} />
+          <Spinner color={light_dark} />
         </>
       );
     }
@@ -161,8 +157,8 @@ class HomeScreen extends Component {
           renderItem={this.renderItem}
           keyExtractor={(item) => item.title}
           stickyHeaderIndices={[0]}
-          contentContainerStyle={{alignContent: "center"}}          
           style={styles.flatList}
+          contentContainerStyle={styles.containerStyle}
         />
       </SafeAreaView>
     );
@@ -175,16 +171,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: white,
-    
-  },
-  spinner: {
-    flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    backgroundColor: white,
+    alignItems: "center",
   },
   flatList: {
-    flex: 1,    
+    flex: 1,
   },
   header: {
     backgroundColor: "transparent",
@@ -203,5 +194,8 @@ const styles = StyleSheet.create({
   },
   gradient: {
     flex: 1,
+  },
+  containerStyle: {
+    marginTop: 10,
   },
 });

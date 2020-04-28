@@ -99,39 +99,32 @@ const AppStack = () => {
               ? options.headerTitle
               : options.title !== undefined
               ? options.title
-              : scene.route.name;          
+              : scene.route.name;
+
+          const hasSegment = title === "Deck Details";
+          const hasSpan = title === "Add Question" || "Quiz";
 
           return (
             <LinearGradient colors={["#141e30", "#243b55"]}>
               <Header
                 style={[
                   options.headerStyle,
-                  { marginTop: StatusBar.currentHeight },
+                  /* { marginTop: StatusBar.currentHeight }, */
                 ]}
+                hasSegment={hasSegment}
+                span={hasSpan}
               >
                 <Left>
                   {previous ? (
                     <Button transparent onPress={() => navigation.goBack()}>
-                      <Icon name="arrow-back" style={{color: white}}/>
+                      <Icon name="arrow-back" style={{ color: white }} />
                     </Button>
                   ) : null}
                 </Left>
                 <Body>
                   <Title style={{ color: white }}>{title}</Title>
                 </Body>
-                {title === "Home" ? (
-                  <Right>
-                    <Button transparent>
-                      <Icon
-                        ios="ios-reorder"
-                        android="md-reorder"
-                        style={styles.btnFilter}
-                      />
-                    </Button>
-                  </Right>
-                ) : (
-                  <Right />
-                )}
+                <Right />
               </Header>
             </LinearGradient>
           );
@@ -158,8 +151,28 @@ const AppStack = () => {
           headerTintColor: "#FFF",
         }}
       />
-      <AppNavigator.Screen name={"Add Question"} component={AddQuestion} />
-      <AppNavigator.Screen name={"Quiz"} component={Quiz} />
+      <AppNavigator.Screen
+        name={"Add Question"}
+        component={AddQuestion}
+        options={{
+          headerTintColor: "#FFF",
+          headerStyle: {
+            ...styles.addQuestionStyle,
+          },
+          headerShown: false,
+        }}
+      />
+      <AppNavigator.Screen
+        name={"Quiz"}
+        component={Quiz}
+        options={{
+          headerTintColor: "#FFF",
+          headerStyle: {
+            ...styles.addQuestionStyle,
+          },
+          headerShown: false,
+        }}
+      />
     </AppNavigator.Navigator>
   );
 };
@@ -196,6 +209,9 @@ const styles = StyleSheet.create({
   homeHeaderStyle: {
     backgroundColor: "transparent",
     height: 60,
+  },
+  addQuestionStyle: {
+    backgroundColor: "transparent",
   },
   gradient: {
     flex: 1,

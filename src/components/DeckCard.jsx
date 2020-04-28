@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardItem, Body, Text, Icon, Right } from "native-base";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Dimensions } from "react-native";
 import { blue_lighteen } from "../utils/colors";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -44,13 +44,14 @@ const styles = StyleSheet.create({
   },
   metricTitle: {
     color: blue_lighteen,
-    fontSize: 10,
+    fontSize: 12,
   },
   row: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
+    borderColor: "#d50000",
   },
   icon: {
     marginRight: 20,
@@ -60,23 +61,25 @@ const styles = StyleSheet.create({
   column: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
+    alignItems: "center",
   },
   gradient: {
     flex: 1,
     borderRadius: 15,
     marginRight: 10,
     marginLeft: 10,
+    width: Math.round(Dimensions.get("window").width) - 25    
   },
   cardItem: {
-    backgroundColor: "transparent",
-    shadowColor: "#000",
+    backgroundColor: "transparent",    
+    shadowColor: "#000000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+
     elevation: 5,
   },
 });
