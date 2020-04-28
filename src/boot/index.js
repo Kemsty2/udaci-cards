@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleProvider } from "native-base";
+import { StyleProvider, Root } from "native-base";
 import * as Font from "expo-font";
 import { AppLoading } from "expo";
 import { Ionicons } from "@expo/vector-icons";
@@ -34,7 +34,9 @@ export default class Setup extends Component {
 
     return (
       <StyleProvider style={getTheme(variables)}>
-        <App />
+        <Root>
+          <App />
+        </Root>
       </StyleProvider>
     );
   }

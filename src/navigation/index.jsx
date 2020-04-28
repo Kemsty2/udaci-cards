@@ -23,7 +23,7 @@ import AddDeck from "../screens/AddDeckScreen";
 import AddQuestion from "../screens/AddQuestionScreen";
 import DeckDetails from "../screens/DeckDetailsScreen";
 import Quiz from "../screens/QuizScreen";
-import Home from "../screens/HomeScreen";
+import Home from "../containers/HomeContainer";
 import { white, grey } from "../utils/colors";
 
 const AppNavigator = createStackNavigator();

@@ -1,9 +1,5 @@
 import React, { Component } from "react";
-import {  
-  Text,  
-  ListItem,  
-  Body,  
-} from "native-base";
+import { Text, ListItem, Body } from "native-base";
 import {
   StyleSheet,
   StatusBar,
@@ -15,6 +11,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import DeckCard from "../components/DeckCard";
 import { white, light_dark } from "../utils/colors";
 import Spinner from "../components/Loader";
+import { styles } from "./styles/Home.style";
 //import Constants from "expo-constants"
 
 const datas = {
@@ -103,20 +100,16 @@ class HomeScreen extends Component {
     super(props);
 
     this.state = {
-      isLoading: true,
-      data: [],
+      isLoading: true,      
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    await this.props.listDecks();
     this.setState({
-      data: [...Object.values(datas)],
-    });
-    setTimeout(() => {
-      this.setState({
-        isLoading: false,
-      });
-    }, 1000);
+      isLoading: false,
+    });        
+    console.log(this.props.listOfDecks);
   }
 
   renderItem = ({ item }) => {
@@ -140,6 +133,8 @@ class HomeScreen extends Component {
   };
 
   render() {
+    const { status } = this.props;
+
     if (this.state.isLoading) {
       return (
         <>
@@ -151,51 +146,24 @@ class HomeScreen extends Component {
 
     return (
       <SafeAreaView style={styles.container}>
-        <HomeEffect />
-        <FlatList
-          data={this.state.data}
-          renderItem={this.renderItem}
-          keyExtractor={(item) => item.title}
-          stickyHeaderIndices={[0]}
-          style={styles.flatList}
-          contentContainerStyle={styles.containerStyle}
-        />
+        {status === "pending" ? (
+          <Spinner color={light_dark} />
+        ) : (
+          <>
+            <HomeEffect />
+            <FlatList
+              data={this.props.listOfDecks}
+              renderItem={this.renderItem}
+              keyExtractor={(item) => item.title}
+              stickyHeaderIndices={[0]}
+              style={styles.flatList}
+              contentContainerStyle={styles.containerStyle}
+            />
+          </>
+        )}
       </SafeAreaView>
     );
   }
 }
 
 export default HomeScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: white,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  flatList: {
-    flex: 1,
-  },
-  header: {
-    backgroundColor: "transparent",
-    borderColor: "transparent",
-    padding: 0,
-  },
-  item: {
-    backgroundColor: "transparent",
-    borderColor: "transparent",
-    padding: 0,
-  },
-  headerTitle: {
-    textAlign: "center",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  gradient: {
-    flex: 1,
-  },
-  containerStyle: {
-    marginTop: 10,
-  },
-});
