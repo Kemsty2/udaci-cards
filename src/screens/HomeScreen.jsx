@@ -12,73 +12,6 @@ import DeckCard from "../components/DeckCard";
 import { white, light_dark } from "../utils/colors";
 import Spinner from "../components/Loader";
 import { styles } from "./styles/Home.style";
-//import Constants from "expo-constants"
-
-const datas = {
-  React: {
-    title: "React",
-    questions: [
-      {
-        question: "What is React?",
-        answer: "A library for managing user interfaces",
-      },
-      {
-        question: "Where do you make Ajax requests in React?",
-        answer: "The componentDidMount lifecycle event",
-      },
-    ],
-  },
-  JavaScript: {
-    title: "JavaScript",
-    questions: [
-      {
-        question: "What is a closure?",
-        answer:
-          "The combination of a function and the lexical environment within which that function was declared.",
-      },
-    ],
-  },
-  Three: {
-    title: "Three",
-    questions: [
-      {
-        question: "What is a closure?",
-        answer:
-          "The combination of a function and the lexical environment within which that function was declared.",
-      },
-    ],
-  },
-  Four: {
-    title: "Four",
-    questions: [
-      {
-        question: "What is a closure?",
-        answer:
-          "The combination of a function and the lexical environment within which that function was declared.",
-      },
-    ],
-  },
-  Five: {
-    title: "Five",
-    questions: [
-      {
-        question: "What is a closure?",
-        answer:
-          "The combination of a function and the lexical environment within which that function was declared.",
-      },
-    ],
-  },
-  Six: {
-    title: "Six",
-    questions: [
-      {
-        question: "What is a closure?",
-        answer:
-          "The combination of a function and the lexical environment within which that function was declared.",
-      },
-    ],
-  },
-};
 
 /**
  * display the title of each deck
@@ -100,7 +33,7 @@ class HomeScreen extends Component {
     super(props);
 
     this.state = {
-      isLoading: true,      
+      isLoading: true,
     };
   }
 
@@ -108,7 +41,7 @@ class HomeScreen extends Component {
     await this.props.listDecks();
     this.setState({
       isLoading: false,
-    });        
+    });
     console.log(this.props.listOfDecks);
   }
 
@@ -127,7 +60,11 @@ class HomeScreen extends Component {
       <DeckCard
         title={item.title}
         numberOfCards={item && item.questions ? item.questions.length : 0}
-        navigation={navigation}
+        onPress={() =>
+          navigation.navigate("Deck Details", {
+            title: item.title,
+          })
+        }
       />
     );
   };

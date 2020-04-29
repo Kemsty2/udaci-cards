@@ -13,10 +13,10 @@ import {
   Separator,
 } from "native-base";
 import { SafeAreaView, View, StatusBar, SectionList } from "react-native";
-import { white, light_dark } from "../utils/colors";
+import { white, light_dark, red } from "../utils/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { styles } from "./styles/DeckDetails.style";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, CommonActions } from "@react-navigation/native";
 import Spinner from "../components/Loader";
 
 /**
@@ -75,11 +75,24 @@ class DeckDetailsScreen extends Component {
 
     this.state = {
       isReady: false,
+      deck: {},
+      questions: [
+        {
+          title: "List of Cards",
+          data: [],
+        },
+      ],
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
+    const deck = await this.props.getDeck();
+    let questions = this.state.questions;
+    questions[0].data = [...deck.questions];
+    console.log(deck);
     this.setState({
+      deck,
+      questions,
       isReady: true,
     });
   }
@@ -98,21 +111,46 @@ class DeckDetailsScreen extends Component {
     }
   };
 
+  deleteDeck = async () => {
+    const { deleteDeck } = this.props;
+
+    await deleteDeck();
+
+    this.toHome();
+  };
+
+  toHome = () => {
+    this.props.navigation.dispatch(CommonActions.goBack());
+  };
+
   render() {
+    const { navigation, route } = this.props;
+    const { deck, questions } = this.state;
+
     if (!this.state.isReady) {
       return <Spinner />;
     }
-    const { navigation } = this.props;
     return (
       <SafeAreaView style={styles.container}>
         <HomeEffect />
+        <Button
+          transparent
+          onPress={() => navigation.goBack()}
+          style={{ position: "absolute", right: 0, top: 0 }}
+        >
+          <Icon ios="ios-trash" android="md-trash" style={{ color: red }} />
+        </Button>
         <Segment style={styles.segment}>
           <Button
             first
-            onPress={() => navigation.navigate(`Add Question`)}
+            onPress={() =>
+              navigation.navigate(`Add Question`, {
+                title: route.params.title,
+              })
+            }
             style={{
-              flex: 1,
-              marginLeft: 20,
+              flex: 2.5,
+              marginLeft: 15,
               height: 50,
               backgroundColor: light_dark,
               borderColor: light_dark,
@@ -128,23 +166,59 @@ class DeckDetailsScreen extends Component {
             </Text>
           </Button>
           <Button
-            last
-            onPress={() => navigation.navigate(`Quiz`)}
+            onPress={() =>
+              navigation.navigate(`Quiz`, {
+                title: route.params.title,
+              })
+            }
             style={{
-              flex: 1,
-              marginRight: 20,
+              flex: 2,
               height: 50,
               backgroundColor: light_dark,
               borderColor: light_dark,
               alignItems: "center",
               justifyContent: "center",
-              borderTopRightRadius: 10,
-              borderBottomRightRadius: 10,
             }}
           >
             <Text style={{ color: white, textAlign: "center" }}>
               Start Quiz
             </Text>
+          </Button>
+          <Button
+            transparent
+            onPress={() =>
+              navigation.navigate(`Add Deck`, {
+                title: route.params.title,
+              })
+            }
+            style={{
+              flex: 1,
+              height: 50,
+              backgroundColor: white,
+              borderColor: light_dark,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name="edit" type="Entypo" style={{ color: light_dark }} />
+          </Button>
+          <Button
+            last
+            transparent
+            onPress={this.deleteDeck}
+            style={{
+              flex: 1,
+              height: 50,
+              backgroundColor: white,
+              borderColor: light_dark,
+              borderTopRightRadius: 10,
+              borderBottomRightRadius: 10,
+              marginRight: 15,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Icon name="trash" type="Entypo" style={{ color: red }} />
           </Button>
         </Segment>
 
@@ -163,15 +237,19 @@ class DeckDetailsScreen extends Component {
                           style={styles.titleIcon}
                           name="ios-information-circle-outline"
                         />
-                        <Text style={styles.title}>Deck Title</Text>
+                        <Text style={styles.title}>{deck.title}</Text>
                       </View>
                       <View style={styles.timeContainer}>
                         <Icon style={styles.timeIcon} name="ios-timer" />
-                        <Text style={styles.timeValue}>{"At 28/12/2018"}</Text>
+                        <Text style={styles.timeValue}>
+                          {new Date(deck.createdAt).toLocaleDateString()}
+                        </Text>
                       </View>
                     </View>
                     <View style={styles.numCardsValueContainer}>
-                      <Text style={styles.numCardsValue}>{3}</Text>
+                      <Text style={styles.numCardsValue}>
+                        {deck.questions.length}
+                      </Text>
                       <Text style={styles.numCardsValuelabel}>Cards</Text>
                     </View>
                   </Body>
@@ -180,7 +258,7 @@ class DeckDetailsScreen extends Component {
             </Card>
 
             <SectionList
-              sections={DATA}
+              sections={questions}
               renderItem={({ item }) => <Item title={item.title} />}
               renderSectionHeader={({ section: { title } }) => (
                 <Separator

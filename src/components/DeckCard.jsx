@@ -4,7 +4,7 @@ import { View, StyleSheet, Dimensions } from "react-native";
 import { blue_lighteen } from "../utils/colors";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function DeckCard({ title, numberOfCards, navigation }) {
+export default function DeckCard({ title, numberOfCards, onPress }) {
   return (
     <Card
       style={{ backgroundColor: "transparent", borderColor: "transparent" }}
@@ -13,7 +13,7 @@ export default function DeckCard({ title, numberOfCards, navigation }) {
         <CardItem
           style={styles.cardItem}
           button
-          onPress={() => navigation.navigate(`Deck Details`)}
+          onPress={onPress}
         >
           <Body style={styles.row}>
             <Icon active name="ios-apps" style={styles.icon} />

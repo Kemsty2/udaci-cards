@@ -21,10 +21,10 @@ import { LinearGradient } from "expo-linear-gradient";
 
 import AddDeck from "../containers/AddDeckContainer";
 import AddQuestion from "../screens/AddQuestionScreen";
-import DeckDetails from "../screens/DeckDetailsScreen";
+import DeckDetails from "../containers/DeckDetailsContainer";
 import Quiz from "../screens/QuizScreen";
 import Home from "../containers/HomeContainer";
-import { white, grey } from "../utils/colors";
+import { white, grey, red } from "../utils/colors";
 
 const AppNavigator = createStackNavigator();
 const TabNavigator = createBottomTabNavigator();
@@ -101,7 +101,7 @@ const AppStack = () => {
               ? options.title
               : scene.route.name;
 
-          const hasSegment = title === "Deck Details";
+          const hasSegment = scene.route.name === "Deck Details";          
           const hasSpan = title === "Add Question" || "Quiz";
 
           return (
@@ -124,7 +124,11 @@ const AppStack = () => {
                 <Body>
                   <Title style={{ color: white }}>{title}</Title>
                 </Body>
-                <Right />
+                {hasSegment ? (
+                  <Right/>
+                ) : (
+                  <Right />
+                )}
               </Header>
             </LinearGradient>
           );
@@ -144,12 +148,13 @@ const AppStack = () => {
       <AppNavigator.Screen
         name={"Deck Details"}
         component={DeckDetails}
-        options={{
+        options={({ route }) => ({
           headerStyle: {
             ...styles.homeHeaderStyle,
           },
           headerTintColor: "#FFF",
-        }}
+          title: route.params.title,
+        })}
       />
       <AppNavigator.Screen
         name={"Add Question"}
@@ -183,7 +188,7 @@ const AppTab = () => {
       <TabNavigator.Screen
         name="Home"
         component={AppStack}
-        options={{ iosIcon: "ios-apps", mdIcon: "md-apps" }}
+        options={{ iosIcon: "ios-home", mdIcon: "md-home" }}
       />
       <TabNavigator.Screen
         name="Add Deck"

@@ -13,3 +13,10 @@ export function saveDeck(deck) {
     deck,
   };
 }
+
+export function deleteDeck(title) {
+  return {
+    type: DELETE_DECK,
+    title
+  }
+}

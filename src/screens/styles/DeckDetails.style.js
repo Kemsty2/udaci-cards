@@ -28,8 +28,8 @@ export const styles = StyleSheet.create({
   card: {
     backgroundColor: "transparent",
     borderColor: "transparent",
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 15,
+    marginRight: 15,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

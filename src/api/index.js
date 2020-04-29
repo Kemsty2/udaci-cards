@@ -19,11 +19,23 @@ export const getDecks = async () => {
 };
 
 export const getDeck = async (id) => {
-  const decks = await getDecks();
-  if (decks === null) return null;
+  let decks = await getDecks();  
   
-  return JSON.parse(decks)[id];
+  if (decks === null) return null;
+  decks = JSON.parse(decks);
+  
+  return decks[id];
 };
+
+export const removeDeck = async (title) => {
+  let decks = await getDecks();
+  decks = JSON.parse(decks);
+
+  decks[title] = undefined;
+  delete decks[title];
+
+  return AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
+}
 
 export const saveDeckTitle = (title) => {
   const deck = createDeck(title);

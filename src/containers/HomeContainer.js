@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import HomeScreen from "../screens/HomeScreen";
-import { getDecks } from "../api";
+import { getDecks, clear } from "../api";
 import { listDecks } from "../redux/actions/decks";
 import { success, failed, pending } from "../redux/actions/messages";
 import _ from "lodash";
@@ -29,7 +29,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
             )
           );
 
-      dispatch(success("Success"));
+      dispatch(success());      
     } catch (error) {
       console.log(error);
       dispatch(failed("Problem to get Decks"));
