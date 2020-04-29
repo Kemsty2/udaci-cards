@@ -92,7 +92,7 @@ function HomeEffect() {
     }, [])
   );
 
-  return <StatusBar barStyle="light-content" backgroundColor="transparent" />;
+  return null;
 }
 
 class HomeScreen extends Component {
@@ -126,7 +126,7 @@ class HomeScreen extends Component {
     return (
       <DeckCard
         title={item.title}
-        numberOfCards={item.questions.length}
+        numberOfCards={item && item.questions ? item.questions.length : 0}
         navigation={navigation}
       />
     );
@@ -146,6 +146,7 @@ class HomeScreen extends Component {
 
     return (
       <SafeAreaView style={styles.container}>
+        <StatusBar barStyle="light-content" backgroundColor="transparent" />
         {status === "pending" ? (
           <Spinner color={light_dark} />
         ) : (

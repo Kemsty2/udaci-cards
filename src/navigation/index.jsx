@@ -19,7 +19,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StyleSheet, StatusBar } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-import AddDeck from "../screens/AddDeckScreen";
+import AddDeck from "../containers/AddDeckContainer";
 import AddQuestion from "../screens/AddQuestionScreen";
 import DeckDetails from "../screens/DeckDetailsScreen";
 import Quiz from "../screens/QuizScreen";

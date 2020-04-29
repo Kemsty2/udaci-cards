@@ -6,3 +6,10 @@ export function listDecks(decks) {
     decks,
   };
 }
+
+export function saveDeck(deck) {
+  return {
+    type: SAVE_DECK,
+    deck,
+  };
+}
