@@ -17,7 +17,7 @@ const initialState = {
 export default function (state = initialState, action) {
   const title = action.title;
   const decks = state.listOfDecks;
-  const deck = decks[title];
+  const deck = decks[title] || action.deck;
   const question = action.question;
 
   switch (action.type) {

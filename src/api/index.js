@@ -89,18 +89,21 @@ export const addCardToDeck = async (title, card) => {
 export const deleteCardToDeck = async (title, idCard) => {
   try {
     let decks = await getDecks();
+
     if (decks === null) return null;
 
     decks = JSON.parse(decks);
     let deck = decks[title];
 
-    deck[idCard] = undefined;
-    delete deck[idCard];
+    deck.questions[idCard] = undefined;
+    delete deck.questions[idCard];
 
     decks = Object.assign({}, decks, {
-      [title]: deck,
       ...decks,
+      [title]: deck,      
     });
+
+    console.log(decks[title]);
 
     return AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
   } catch (error) {
