@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { Text, ListItem, Body } from "native-base";
+import { Text, ListItem, Body, Icon } from "native-base";
 import {
   StatusBar,
   Platform,
   SafeAreaView,
   FlatList,
+  View,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import DeckCard from "../components/DeckCard";
@@ -41,7 +42,7 @@ class HomeScreen extends Component {
     await this.props.listDecks();
     this.setState({
       isLoading: false,
-    });    
+    });
   }
 
   renderItem = ({ item }) => {
@@ -58,7 +59,9 @@ class HomeScreen extends Component {
     return (
       <DeckCard
         title={item.title}
-        numberOfCards={item && item.questions ? (Object.values(item.questions)).length : 0}
+        numberOfCards={
+          item && item.questions ? Object.values(item.questions).length : 0
+        }
         onPress={() =>
           navigation.navigate("Deck Details", {
             title: item.title,
@@ -79,6 +82,16 @@ class HomeScreen extends Component {
           <HomeEffect />
           <Spinner color={light_dark} />
         </>
+      );
+    }
+
+    if (Object.values(listOfDecks).length === 0) {
+      return (
+        <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+          <HomeEffect />
+          <Icon ios="ios-sad" android="md-sad" style={{fontSize: 75, color: light_dark}}/>
+          <Text style={{fontSize: 18}}>No Decks Found Please, Add Some Deck ⤵</Text>
+        </View>
       );
     }
 
