@@ -46,9 +46,21 @@ class AddDeckScreen extends Component {
     };
   }
   componentDidMount() {
-    this.setState({
-      isReady: true,
-    });
+    this._unsubscribe = this.props.navigation.addListener("focus", async () => {
+      const {title} = this.props.route;
+      
+      if(title !== undefined) await this.props.getDeck();    
+      //if(title) await this.props.getDeck();    
+
+      this.setState({        
+        isReady: true,
+      });
+    });    
+  }
+
+  componentWillUnmount(){
+    this._unsubscribe();
+    //this.props.clearDeck();
   }
 
   renderInput = ({
@@ -74,18 +86,31 @@ class AddDeckScreen extends Component {
     );
   };
 
-  submit = async (values) => {    
-    await this.props.saveDeck(values.title);
-    this.toHome();
+  submit = async (values) => {
+    const {saveDeck, updateDeck, route} = this.props;
+    const {title} = route.params;
+    if(title === undefined){
+      await saveDeck(values.title);
+      this.toHome();
+    }else{
+      await updateDeck(values.title);
+      this.toDetails(values.title)
+    }    
   };
 
   toHome = () => {
     this.props.navigation.dispatch(CommonActions.goBack());
   };
 
+  toDetails = (title) => {
+    this.props.navigation.navigate("Deck Details",{
+      title
+    });
+  }
+
   render() {
-    const { navigation, status } = this.props;
-    console.log("status", status);
+    const { navigation, status, route } = this.props;
+    const {title} = route.params;    
 
     if (!this.state.isReady) {
       return <Spinner color={light_dark} />;
@@ -115,7 +140,7 @@ class AddDeckScreen extends Component {
                     </Button>
                   </Left>
                   <Body style={styles.innerContainer}>
-                    <Title style={styles.headerStyle}>Add Deck</Title>
+                    <Title style={styles.headerStyle}>{title === undefined? "Add" : "Update"} Deck</Title>
                   </Body>
                   <Right />
                 </Header>
@@ -130,10 +155,11 @@ class AddDeckScreen extends Component {
                   What is the title of the new Deck ?
                 </Text>
                 <AddDeckForm
-                  text="Create"
+                  text={title === undefined ? "Create" : "Update"}
                   renderInput={this.renderInput}
                   styles={styles}
                   onSubmit={this.submit}
+                  {...this.props}
                 />
               </Content>
             </Container>

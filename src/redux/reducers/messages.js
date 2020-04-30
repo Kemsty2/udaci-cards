@@ -15,8 +15,7 @@ export default (state = initialState, action = {}) => {
           text: action.message,
           buttonText: "Okay",
           type: "success",
-          duration: 3000,
-          position: "top"
+          duration: 3000,          
         });
       return {
         ...state,
@@ -35,8 +34,7 @@ export default (state = initialState, action = {}) => {
           text: action.message,
           buttonText: "Okay",
           type: "danger",
-          duration: 3000,
-          position: "top"
+          duration: 3000,          
         });
       return {
         ...state,

@@ -64,6 +64,26 @@ export const saveDeckTitle = (title) => {
   return deck;
 };
 
+export const updateDeckTitle = async (title, oldTitle) => {
+  let decks = await getDecks();
+  decks = JSON.parse(decks);
+
+  const deck = decks[oldTitle];
+  deck.title = title;
+
+  decks[oldTitle] = undefined;
+  delete decks[oldTitle];
+
+  decks = Object.assign({}, decks, {
+    [title]: deck,
+    ...decks,
+  });
+
+  AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
+  
+  return deck;
+};
+
 export const addCardToDeck = async (title, card) => {
   try {
     const decks = await getDecks();
@@ -100,10 +120,8 @@ export const deleteCardToDeck = async (title, idCard) => {
 
     decks = Object.assign({}, decks, {
       ...decks,
-      [title]: deck,      
-    });
-
-    console.log(decks[title]);
+      [title]: deck,
+    });    
 
     return AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
   } catch (error) {

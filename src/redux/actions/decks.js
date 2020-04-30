@@ -1,4 +1,13 @@
-import { LIST_DECKS, DELETE_DECK, UPDATE_DECK, SAVE_DECK, ADD_CARD, GET_DECK, CLEAR_DECK, DELETE_CARD } from ".";
+import {
+  LIST_DECKS,
+  DELETE_DECK,
+  UPDATE_DECK,
+  SAVE_DECK,
+  ADD_CARD,
+  GET_DECK,
+  CLEAR_DECK,
+  DELETE_CARD,
+} from ".";
 
 export function listDecks(decks) {
   return {
@@ -17,35 +26,43 @@ export function saveDeck(deck) {
 export function deleteDeck(title) {
   return {
     type: DELETE_DECK,
-    title
-  }
+    title,
+  };
 }
 
-export function setDeck(deck){
+export function setDeck(deck) {
   return {
     type: GET_DECK,
-    deck
-  }
+    deck,
+  };
 }
 
-export function clearDeck(){
+export function clearDeck() {
   return {
-    type: CLEAR_DECK
-  }
+    type: CLEAR_DECK,
+  };
 }
 
-export function addCard(question, title){
+export function addCard(question, title) {
   return {
     type: ADD_CARD,
     question,
-    title
-  }
+    title,
+  };
 }
 
-export function deleteCard(title, idCard){
+export function deleteCard(title, idCard) {
   return {
     type: DELETE_CARD,
     title,
-    idCard
-  }
+    idCard,
+  };
+}
+
+export function updateDeck(title, oldTitle) {
+  return {
+    type: UPDATE_DECK,
+    title,
+    oldTitle,
+  };
 }

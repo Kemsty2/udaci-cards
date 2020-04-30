@@ -5,7 +5,8 @@ import {
   ADD_CARD,
   GET_DECK,
   CLEAR_DECK,
-  DELETE_CARD
+  DELETE_CARD,
+  UPDATE_DECK
 } from "../actions";
 import _ from "lodash";
 
@@ -19,6 +20,7 @@ export default function (state = initialState, action) {
   const decks = state.listOfDecks;
   const deck = decks[title] || action.deck;
   const question = action.question;
+  const oldTitle = action.oldTitle;
 
   switch (action.type) {
     case LIST_DECKS:
@@ -71,6 +73,19 @@ export default function (state = initialState, action) {
           [title]: deck,
           ...state.listOfDecks
         })
+      }
+    case UPDATE_DECK:
+      const oldDeck = decks[oldTitle];
+      oldDeck.title = title;
+      decks[oldTitle] = undefined;
+      delete decks[oldTitle];
+
+      return {
+        ...state,
+        listOfDecks: {
+          [title]: oldDeck,
+          ...decks
+        }
       }
     default:
       return state;

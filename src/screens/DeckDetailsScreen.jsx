@@ -250,6 +250,7 @@ class DeckDetailsScreen extends Component {
   render() {
     const { navigation, route, deck } = this.props;
     const {questions} = this.state;        
+    
 
     if (!this.state.isReady) {
       return <Spinner color={light_dark} />;
