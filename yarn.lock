@@ -5939,6 +5939,11 @@ react-native-screens@~2.2.0:
   dependencies:
     debounce "^1.2.0"
 
+react-native-swipe-list-view@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-swipe-list-view/-/react-native-swipe-list-view-3.0.0.tgz#98c63ec60996b2bed5843611ab0841d0dd31ac7a"
+  integrity sha512-tFGNh1r2IqJrdahnubyPtnjrI4W7R71BtuRi+KzxSkBUnkpBmGGUYunOvzltMoDVgmoYx02HIoVo+B9i8u00OQ==
+
 react-native-unimodules@~0.9.0:
   version "0.9.0"
   resolved "https://registry.yarnpkg.com/react-native-unimodules/-/react-native-unimodules-0.9.0.tgz#5ce642ac50d124b9d41c09ff7cb397e22f1110ea"

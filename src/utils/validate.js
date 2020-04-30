@@ -34,10 +34,10 @@ export const validateFormAddQuestion = (values) => {
   if(answer === undefined){
     answer = ""
   }
-  if(question.length < 3 && question !== ""){
+  if(question.length < 3){
     error.question = "Please 3 Characters !"
   }
-  if(answer.length < 3 && answer !== ""){
+  if(answer.length < 3 ){
     error.answer = "Please 3 Characters !"
   }
   return error;  

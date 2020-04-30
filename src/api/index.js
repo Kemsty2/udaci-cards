@@ -3,8 +3,8 @@ import { AsyncStorage } from "react-native";
 export function createDeck(title) {
   return {
     title,
-    questions: [],
-    createdAt: Date.now()
+    questions: {},
+    createdAt: Date.now(),
   };
 }
 
@@ -12,30 +12,45 @@ const ASYNCSTORAGE_KEY = "UdaciCards:::AsyncStoreKey";
 
 export const clear = () => {
   AsyncStorage.removeItem(ASYNCSTORAGE_KEY);
-}
+};
 
 export const getDecks = async () => {
-  return await AsyncStorage.getItem(ASYNCSTORAGE_KEY);
+  try {
+    return await AsyncStorage.getItem(ASYNCSTORAGE_KEY);
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const getDeck = async (id) => {
-  let decks = await getDecks();  
-  
-  if (decks === null) return null;
-  decks = JSON.parse(decks);
-  
-  return decks[id];
+  try {
+    let decks = await getDecks();
+
+    if (decks === null) return null;
+    decks = JSON.parse(decks);
+
+    return decks[id];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };
 
 export const removeDeck = async (title) => {
-  let decks = await getDecks();
-  decks = JSON.parse(decks);
+  try {
+    let decks = await getDecks();
+    decks = JSON.parse(decks);
 
-  decks[title] = undefined;
-  delete decks[title];
+    decks[title] = undefined;
+    delete decks[title];
 
-  return AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
-}
+    return AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 
 export const saveDeckTitle = (title) => {
   const deck = createDeck(title);
@@ -50,17 +65,46 @@ export const saveDeckTitle = (title) => {
 };
 
 export const addCardToDeck = async (title, card) => {
-  const decks = await getDecks();
-  if (decks === null) return null;
+  try {
+    const decks = await getDecks();
+    if (decks === null) return null;
 
-  let decksJson = JSON.parse(decks);
-  let deck = decksJson[title];
+    let decksJson = JSON.parse(decks);
+    let deck = decksJson[title];
 
-  deck.questions.push(card);
-  decksJson = Object.assign({}, decksJson, {
-    ...decksJson,
-    [title]: deck,
-  });
+    deck.questions = { [card.id]: card, ...deck.questions };
 
-  AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decksJson));
+    decksJson = Object.assign({}, decksJson, {
+      [title]: deck,
+      ...decksJson,
+    });
+
+    AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decksJson));
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const deleteCardToDeck = async (title, idCard) => {
+  try {
+    let decks = await getDecks();
+    if (decks === null) return null;
+
+    decks = JSON.parse(decks);
+    let deck = decks[title];
+
+    deck[idCard] = undefined;
+    delete deck[idCard];
+
+    decks = Object.assign({}, decks, {
+      [title]: deck,
+      ...decks,
+    });
+
+    return AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 };

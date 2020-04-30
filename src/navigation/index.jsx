@@ -20,7 +20,7 @@ import { StyleSheet, StatusBar } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 import AddDeck from "../containers/AddDeckContainer";
-import AddQuestion from "../screens/AddQuestionScreen";
+import AddQuestion from "../containers/AddQuestionContainer";
 import DeckDetails from "../containers/DeckDetailsContainer";
 import Quiz from "../screens/QuizScreen";
 import Home from "../containers/HomeContainer";

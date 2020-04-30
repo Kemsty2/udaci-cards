@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import AddDeckScreen from "../screens/AddDeckScreen";
-import { saveDeckTitle, createDeck, clear } from "../api";
+import { saveDeckTitle, clear } from "../api";
 import { saveDeck } from "../redux/actions/decks";
 import { success, failed, pending } from "../redux/actions/messages";
 import {reset} from 'redux-form';
@@ -20,6 +20,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       dispatch(saveDeck(deck));
 
       dispatch(success("You Successfully create a new Deck"));
+
       dispatch(reset("AddDeckForm"));
       /* clear(); */
 

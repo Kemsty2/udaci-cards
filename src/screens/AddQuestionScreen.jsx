@@ -12,20 +12,16 @@ import {
   Item,
   Input,
 } from "native-base";
-import {
-  StyleSheet,
-  StatusBar,
-  Platform,
-  Text,
-  KeyboardAvoidingView,
-} from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
+import { StatusBar, Platform, Text, KeyboardAvoidingView } from "react-native";
+import { useFocusEffect, CommonActions } from "@react-navigation/native";
 import SafeAreaView from "react-native-safe-area-view";
 import { white, light_dark, red } from "../utils/colors";
-import { validateFormAddQuestion } from "../utils/validate";
 import { LinearGradient } from "expo-linear-gradient";
-import { Field, reduxForm } from "redux-form";
 import Spinner from "../components/Loader";
+import { styles } from "./styles/AddQuestion.style";
+import AddCardForm from "../components/forms/AddCardForm";
+
+
 
 /**
  * Display details of the deck
@@ -52,18 +48,16 @@ class AddQuestionScreen extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        isReady: true,
-      });
-    }, 3000);
+    this.setState({
+      isReady: true,
+    });
   }
 
   renderInput = ({
     input,
     label,
     type,
-    meta: { touched, error, warning },
+    meta: { touched, error, warning, valid },
     last,
   }) => {
     var hasError = false;
@@ -72,7 +66,7 @@ class AddQuestionScreen extends Component {
     }
 
     return (
-      <Item rounded error={hasError} style={{ marginBottom: last ? 40 : 20 }}>
+      <Item rounded error={hasError} success={valid} style={{ marginBottom: last ? 40 : 20 }}>
         <Input {...input} placeholder={label} />
         {hasError ? (
           <Text style={{ color: red, marginRight: 5 }}>{error}</Text>
@@ -83,8 +77,18 @@ class AddQuestionScreen extends Component {
     );
   };
 
+  submit = async (values) => {
+    await this.props.addCard(values);
+    
+    this.toDeck();
+  }
+  
+  toDeck = () => {
+    this.props.navigation.dispatch(CommonActions.goBack());
+  }
+
   render() {
-    const { handleSubmit, reset, navigation } = this.props;
+    const { navigation } = this.props;
 
     if (!this.state.isReady) {
       return <Spinner color={light_dark} />;
@@ -112,7 +116,7 @@ class AddQuestionScreen extends Component {
                   </Button>
                 </Left>
                 <Body style={styles.innerContainer}>
-                  <Title style={styles.headerStyle}>Add Question</Title>
+                  <Title style={styles.headerStyle}>Add Card</Title>
                 </Body>
                 <Right />
               </Header>
@@ -123,21 +127,13 @@ class AddQuestionScreen extends Component {
               style={styles.pContainer}
               contentContainerStyle={styles.pContainerAlign}
             >
-              <Text style={styles.formTitle}>Create a New Question</Text>
-              <Field
-                name="question"
-                label="Question"
-                component={this.renderInput}
+              <Text style={styles.formTitle}>Create a New Card</Text>
+              <AddCardForm
+                styles={styles}
+                renderInput={this.renderInput}
+                text={"Create"}
+                onSubmit={this.submit}
               />
-              <Field
-                name="answer"
-                label="Answer"
-                component={this.renderInput}
-                last={true}
-              />
-              <Button onPress={reset} rounded block style={styles.btnSubmit}>
-                <Text style={styles.btnText}>Create</Text>
-              </Button>
             </Content>
           </Container>
         </SafeAreaView>
@@ -146,66 +142,5 @@ class AddQuestionScreen extends Component {
   }
 }
 
-export default reduxForm({ form: "Add Question", validateFormAddQuestion })(
-  AddQuestionScreen
-);
+export default AddQuestionScreen;
 
-const styles = StyleSheet.create({
-  kbdAvoidingViewStyle: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-  },
-  iconBack: {
-    color: white,
-    fontWeight: "bold",
-  },
-  gradient: {},
-  headerStyle: {
-    color: white,
-    fontWeight: "bold",
-    fontSize: 24,
-    textAlign: "center",
-    width: 200,
-  },
-  innerContainer: {
-    flex: 2,
-    justifyContent: "flex-start",
-  },
-  pContainer: {
-    borderTopColor: white,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
-    borderTopWidth: 2,
-    borderStyle: "solid",
-    marginTop: -20,
-    zIndex: 9999,
-    backgroundColor: white,
-  },
-  pContainerAlign: {
-    flex: 1,
-    /* width: Math.round(Dimensions.get("window").width) - 25, */
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  formTitle: {
-    position: "absolute",
-    top: 50,
-    fontSize: 24,
-    textAlign: "center",
-    fontWeight: "bold",
-    textTransform: "capitalize",
-  },
-  btnSubmit: {
-    backgroundColor: light_dark,
-  },
-  btnText: {
-    color: white,
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-});

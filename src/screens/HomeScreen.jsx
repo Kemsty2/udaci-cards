@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Text, ListItem, Body } from "native-base";
 import {
-  StyleSheet,
   StatusBar,
   Platform,
   SafeAreaView,
@@ -9,9 +8,10 @@ import {
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import DeckCard from "../components/DeckCard";
-import { white, light_dark } from "../utils/colors";
+import { light_dark } from "../utils/colors";
 import Spinner from "../components/Loader";
 import { styles } from "./styles/Home.style";
+import _ from "lodash";
 
 /**
  * display the title of each deck
@@ -41,8 +41,7 @@ class HomeScreen extends Component {
     await this.props.listDecks();
     this.setState({
       isLoading: false,
-    });
-    console.log(this.props.listOfDecks);
+    });    
   }
 
   renderItem = ({ item }) => {
@@ -59,7 +58,7 @@ class HomeScreen extends Component {
     return (
       <DeckCard
         title={item.title}
-        numberOfCards={item && item.questions ? item.questions.length : 0}
+        numberOfCards={item && item.questions ? (Object.values(item.questions)).length : 0}
         onPress={() =>
           navigation.navigate("Deck Details", {
             title: item.title,
@@ -70,7 +69,9 @@ class HomeScreen extends Component {
   };
 
   render() {
-    const { status } = this.props;
+    const { status, listOfDecks } = this.props;
+    let data = [];
+    data = _.orderBy(Object.values(listOfDecks), ["createdAt"], ["desc"]);
 
     if (this.state.isLoading) {
       return (
@@ -90,7 +91,7 @@ class HomeScreen extends Component {
           <>
             <HomeEffect />
             <FlatList
-              data={this.props.listOfDecks}
+              data={data}
               renderItem={this.renderItem}
               keyExtractor={(item) => item.title}
               stickyHeaderIndices={[0]}

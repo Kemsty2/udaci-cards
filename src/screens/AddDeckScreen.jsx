@@ -74,7 +74,7 @@ class AddDeckScreen extends Component {
     );
   };
 
-  submit = async (values) => {
+  submit = async (values) => {    
     await this.props.saveDeck(values.title);
     this.toHome();
   };
@@ -85,6 +85,7 @@ class AddDeckScreen extends Component {
 
   render() {
     const { navigation, status } = this.props;
+    console.log("status", status);
 
     if (!this.state.isReady) {
       return <Spinner color={light_dark} />;

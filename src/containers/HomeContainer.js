@@ -18,18 +18,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       dispatch(pending());
 
       const decks = await getDecks();
-      
-      decks === null
-        ? dispatch(listDecks([]))
-        : dispatch(
-            listDecks(
-              Object.values(
-                _.orderBy(JSON.parse(decks), ["createdAt"], ["desc"])
-              )
-            )
-          );
 
-      dispatch(success());      
+      decks === null
+        ? dispatch(listDecks({}))
+        : dispatch(listDecks(JSON.parse(decks)));
+
+      dispatch(success());
+      //clear();
     } catch (error) {
       console.log(error);
       dispatch(failed("Problem to get Decks"));
