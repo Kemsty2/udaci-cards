@@ -21,8 +21,6 @@ import Spinner from "../components/Loader";
 import { styles } from "./styles/AddQuestion.style";
 import AddCardForm from "../components/forms/AddCardForm";
 
-
-
 /**
  * Display details of the deck
  */
@@ -66,7 +64,12 @@ class AddQuestionScreen extends Component {
     }
 
     return (
-      <Item rounded error={hasError} success={valid} style={{ marginBottom: last ? 40 : 20 }}>
+      <Item
+        rounded
+        error={hasError}
+        success={valid}
+        style={{ marginBottom: last ? 40 : 20 }}
+      >
         <Input {...input} placeholder={label} />
         {hasError ? (
           <Text style={{ color: red, marginRight: 5 }}>{error}</Text>
@@ -78,19 +81,37 @@ class AddQuestionScreen extends Component {
   };
 
   submit = async (values) => {
-    await this.props.addCard(values);
-    
-    this.toDeck();
-  }
-  
+    const { addCard, updateCard, route } = this.props;
+    const { title, questionId } = route.params;
+
+    if (questionId === undefined) {
+      await addCard(values);
+      this.toDeck();
+    } else {
+      await updateCard(values);
+      this.props.navigation.navigate("Deck Details", {
+        title,
+      });
+    }
+  };
+
   toDeck = () => {
     this.props.navigation.dispatch(CommonActions.goBack());
-  }
+  };
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, route } = this.props;
+    let questionId = "";
+    if (route.params !== undefined) {
+      if (route.params.questionId !== undefined) {
+        questionId = route.params.questionId;
+      }
+    }
 
     if (!this.state.isReady) {
+      return <Spinner color={light_dark} />;
+    }
+    if (this.props.status === "pending") {
       return <Spinner color={light_dark} />;
     }
 
@@ -116,7 +137,9 @@ class AddQuestionScreen extends Component {
                   </Button>
                 </Left>
                 <Body style={styles.innerContainer}>
-                  <Title style={styles.headerStyle}>Add Card</Title>
+                  <Title style={styles.headerStyle}>
+                    {questionId.length === 0 ? "Add" : "Update"} Card
+                  </Title>
                 </Body>
                 <Right />
               </Header>
@@ -127,12 +150,15 @@ class AddQuestionScreen extends Component {
               style={styles.pContainer}
               contentContainerStyle={styles.pContainerAlign}
             >
-              <Text style={styles.formTitle}>Create a New Card</Text>
+              <Text style={styles.formTitle}>
+                {questionId.length === 0 ? "Create" : "Update"} a Card
+              </Text>
               <AddCardForm
                 styles={styles}
                 renderInput={this.renderInput}
-                text={"Create"}
+                text={questionId.length === 0 ? "Create" : "Update"}
                 onSubmit={this.submit}
+                {...this.props}
               />
             </Content>
           </Container>
@@ -143,4 +169,3 @@ class AddQuestionScreen extends Component {
 }
 
 export default AddQuestionScreen;
-

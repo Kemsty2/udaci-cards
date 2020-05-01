@@ -47,18 +47,18 @@ class AddDeckScreen extends Component {
   }
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener("focus", async () => {
-      const {title} = this.props.route;
-      
-      if(title !== undefined) await this.props.getDeck();    
-      //if(title) await this.props.getDeck();    
+      const { title } = this.props.route;
 
-      this.setState({        
+      if (title !== undefined) await this.props.getDeck();
+      //if(title) await this.props.getDeck();
+
+      this.setState({
         isReady: true,
       });
-    });    
+    });
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this._unsubscribe();
     //this.props.clearDeck();
   }
@@ -87,15 +87,19 @@ class AddDeckScreen extends Component {
   };
 
   submit = async (values) => {
-    const {saveDeck, updateDeck, route} = this.props;
-    const {title} = route.params;
-    if(title === undefined){
+    const { saveDeck, updateDeck, route } = this.props;
+    let title = "";
+    if (route.params !== undefined) {
+      title = route.params.title;
+    }
+
+    if (title.length === 0) {
       await saveDeck(values.title);
       this.toHome();
-    }else{
+    } else {
       await updateDeck(values.title);
-      this.toDetails(values.title)
-    }    
+      this.toDetails(values.title);
+    }
   };
 
   toHome = () => {
@@ -103,14 +107,17 @@ class AddDeckScreen extends Component {
   };
 
   toDetails = (title) => {
-    this.props.navigation.navigate("Deck Details",{
-      title
+    this.props.navigation.navigate("Deck Details", {
+      title,
     });
-  }
+  };
 
   render() {
     const { navigation, status, route } = this.props;
-    const {title} = route.params;    
+    let title = "";
+    if (route.params !== undefined) {
+      title = route.params.title;
+    }
 
     if (!this.state.isReady) {
       return <Spinner color={light_dark} />;
@@ -140,7 +147,9 @@ class AddDeckScreen extends Component {
                     </Button>
                   </Left>
                   <Body style={styles.innerContainer}>
-                    <Title style={styles.headerStyle}>{title === undefined? "Add" : "Update"} Deck</Title>
+                    <Title style={styles.headerStyle}>
+                      {title.length === 0 ? "Add" : "Update"} Deck
+                    </Title>
                   </Body>
                   <Right />
                 </Header>
@@ -155,7 +164,7 @@ class AddDeckScreen extends Component {
                   What is the title of the new Deck ?
                 </Text>
                 <AddDeckForm
-                  text={title === undefined ? "Create" : "Update"}
+                  text={title.length === 0 ? "Create" : "Update"}
                   renderInput={this.renderInput}
                   styles={styles}
                   onSubmit={this.submit}

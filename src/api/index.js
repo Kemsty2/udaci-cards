@@ -80,7 +80,7 @@ export const updateDeckTitle = async (title, oldTitle) => {
   });
 
   AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
-  
+
   return deck;
 };
 
@@ -113,6 +113,7 @@ export const deleteCardToDeck = async (title, idCard) => {
     if (decks === null) return null;
 
     decks = JSON.parse(decks);
+
     let deck = decks[title];
 
     deck.questions[idCard] = undefined;
@@ -121,9 +122,46 @@ export const deleteCardToDeck = async (title, idCard) => {
     decks = Object.assign({}, decks, {
       ...decks,
       [title]: deck,
-    });    
+    });
 
     return AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export const updateCardOfDeck = async (title, idCard, card) => {
+  try {
+    let decks = await getDecks();
+
+    if (decks === null) return null;
+
+    decks = JSON.parse(decks);
+
+    let deck = decks[title];
+    let question = deck.questions[idCard];
+    question = Object.assign({}, question, {
+      ...card,
+    });
+
+    deck.questions[idCard] = undefined;
+    delete deck.questions[idCard];
+
+    const questions = Object.assign({}, deck.questions, {
+      [idCard]: question,
+      ...deck.questions,
+    });
+
+    deck.questions = { ...questions };    
+
+    decks = Object.assign({}, decks, {
+      ...decks,
+      [title]: deck,
+    });
+
+    return AsyncStorage.setItem(ASYNCSTORAGE_KEY, JSON.stringify(decks));
+    
   } catch (error) {
     console.log(error);
     throw error;

@@ -59,7 +59,7 @@ const mapDispatchToProps = (dispatch, { route }) => ({
       const { title } = route.params;
 
       dispatch(pending());
-      const deck = await updateDeckTitle(newTitle, title);
+      await updateDeckTitle(newTitle, title);
 
       dispatch(updateDeck(newTitle, title));
 

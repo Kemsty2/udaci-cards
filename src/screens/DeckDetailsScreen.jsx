@@ -159,7 +159,10 @@ class DeckDetailsScreen extends Component {
           borderBottomWidth: 1,
           right: 75,
         }}
-        onPress={() => this.props.navigation.goBack()}
+        onPress={() => this.props.navigation.navigate("Add Question", {
+          questionId: item.id,
+          title: this.props.route.params.title
+        })}
       >
         <Icon name="edit" type="Entypo" style={{ color: light_dark }} />
       </TouchableOpacity>

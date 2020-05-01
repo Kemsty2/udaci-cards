@@ -7,6 +7,7 @@ import {
   GET_DECK,
   CLEAR_DECK,
   DELETE_CARD,
+  UPDATE_CARD
 } from ".";
 
 export function listDecks(decks) {
@@ -65,4 +66,13 @@ export function updateDeck(title, oldTitle) {
     title,
     oldTitle,
   };
+}
+
+export function updateCard(title, questionId, card){
+  return {
+    type: UPDATE_CARD,
+    title,
+    questionId,
+    card
+  }
 }
