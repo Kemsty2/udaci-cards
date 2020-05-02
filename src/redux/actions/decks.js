@@ -7,7 +7,9 @@ import {
   GET_DECK,
   CLEAR_DECK,
   DELETE_CARD,
-  UPDATE_CARD
+  UPDATE_CARD,
+  ADD_RESPONSE,
+  CLEAR_RESPONSE
 } from ".";
 
 export function listDecks(decks) {
@@ -74,5 +76,19 @@ export function updateCard(title, questionId, card){
     title,
     questionId,
     card
+  }
+}
+
+export function addResponse(questionId, response){
+  return {
+    type: ADD_RESPONSE,
+    questionId, 
+    response
+  }
+}
+
+export function clearResponse(){
+  return {
+    type: CLEAR_RESPONSE
   }
 }

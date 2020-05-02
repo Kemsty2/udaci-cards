@@ -22,7 +22,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import AddDeck from "../containers/AddDeckContainer";
 import AddQuestion from "../containers/AddQuestionContainer";
 import DeckDetails from "../containers/DeckDetailsContainer";
-import Quiz from "../screens/QuizScreen";
+import Quiz from "../containers/QuizContainer";
 import Home from "../containers/HomeContainer";
 import { white, grey, red } from "../utils/colors";
 
@@ -43,7 +43,7 @@ const BottomNavigation = ({ state, descriptors, navigation }) => {
                 ? options.title
                 : route.name;
 
-            const isFocused = state.index === index;
+            const isFocused = state.index === index;            
 
             const onPress = () => {
               const event = navigation.emit({

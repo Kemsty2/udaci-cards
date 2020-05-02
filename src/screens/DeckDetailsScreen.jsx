@@ -251,9 +251,10 @@ class DeckDetailsScreen extends Component {
   };
 
   render() {
-    const { navigation, route, deck } = this.props;
+    const { navigation, route, deck, responses } = this.props;
     const {questions} = this.state;        
-    
+    const questionId = questions[0].data[0] !== undefined ? questions[0].data[0].id : null;
+        
 
     if (!this.state.isReady) {
       return <Spinner color={light_dark} />;
@@ -273,10 +274,10 @@ class DeckDetailsScreen extends Component {
         </Button>
         <Segment style={styles.segment}>
           <Button
-            first
+            first            
             onPress={() =>
               navigation.navigate(`Add Question`, {
-                title: route.params.title,
+                title: route.params.title                
               })
             }
             style={{
@@ -295,16 +296,18 @@ class DeckDetailsScreen extends Component {
             <Text style={{ color: white, textAlign: "center" }}>Add Card</Text>
           </Button>
           <Button
+            disabled={questionId === null}
             onPress={() =>
               navigation.navigate(`Quiz`, {
                 title: route.params.title,
+                questionId
               })
             }
             style={{
               flex: 2.3,
               height: 50,
-              backgroundColor: light_dark,
-              borderColor: light_dark,
+              backgroundColor: questionId === null ? "#9e9e9e":light_dark,
+              borderColor: questionId === null ? "#9e9e9e":light_dark,
               alignItems: "center",
               justifyContent: "center",
             }}

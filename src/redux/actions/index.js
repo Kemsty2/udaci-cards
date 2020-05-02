@@ -16,3 +16,6 @@ export const SUCCESS = "SUCCESS";
 export const FAILED = "FAILED";
 export const PENDING = "PENDING";
 
+//  List of Action of Quiz
+export const ADD_RESPONSE = "ADD_RESPONSE"
+export const CLEAR_RESPONSE = "CLEAR_RESPONSE";

@@ -7,13 +7,16 @@ import {
   CLEAR_DECK,
   DELETE_CARD,
   UPDATE_DECK,
-  UPDATE_CARD
+  UPDATE_CARD,
+  ADD_RESPONSE,
+  CLEAR_RESPONSE,
 } from "../actions";
 import _ from "lodash";
 
 const initialState = {
   listOfDecks: {},
   deck: {},
+  responses: {},
 };
 
 export default function (state = initialState, action) {
@@ -24,41 +27,41 @@ export default function (state = initialState, action) {
   const oldTitle = action.oldTitle;
   const questionId = action.questionId;
   const card = action.card;
+  const response = action.response;
 
   switch (action.type) {
     case LIST_DECKS:
       return {
         ...state,
-        listOfDecks: {...action.decks},
+        listOfDecks: { ...action.decks },
       };
     case SAVE_DECK:
       return {
         ...state,
-        listOfDecks: {[title]: action.deck, ...state.listOfDecks},
+        listOfDecks: { [title]: action.deck, ...state.listOfDecks },
       };
-    case DELETE_DECK:            
-
+    case DELETE_DECK:
       decks[title] = undefined;
       delete decks[title];
 
       return {
         ...state,
-        listOfDecks: {...decks}
+        listOfDecks: { ...decks },
       };
-    case ADD_CARD:                  
-      deck.questions = {[question.id]: question, ...deck.questions};     
+    case ADD_CARD:
+      deck.questions = { [question.id]: question, ...deck.questions };
 
       return {
         ...state,
         listOfDecks: Object.assign({}, decks, {
           [title]: deck,
-          ...decks
-        })        
+          ...decks,
+        }),
       };
     case GET_DECK:
       return {
         ...state,
-        deck: action.deck ,
+        deck: action.deck,
       };
     case CLEAR_DECK:
       return {
@@ -66,17 +69,16 @@ export default function (state = initialState, action) {
         deck: {},
       };
     case DELETE_CARD:
-      
       deck.questions[action.idCard] = undefined;
-      delete deck.questions[action.idCard]
-      
+      delete deck.questions[action.idCard];
+
       return {
         ...state,
         listOfDecks: Object.assign({}, state.listOfDecks, {
           [title]: deck,
-          ...state.listOfDecks
-        })
-      }
+          ...state.listOfDecks,
+        }),
+      };
     case UPDATE_DECK:
       const oldDeck = decks[oldTitle];
       oldDeck.title = title;
@@ -87,23 +89,25 @@ export default function (state = initialState, action) {
         ...state,
         listOfDecks: {
           [title]: oldDeck,
-          ...decks
-        }
-      }
-    case UPDATE_CARD:      
-
+          ...decks,
+        },
+      };
+    case UPDATE_CARD:
       let oldQuestions = deck.questions[questionId];
 
-      oldQuestions = Object.assign({}, oldQuestions, {...oldQuestions, ...card});
+      oldQuestions = Object.assign({}, oldQuestions, {
+        ...oldQuestions,
+        ...card,
+      });
       deck.questions[questionId] = undefined;
       delete deck.questions[questionId];
 
       const questions = Object.assign({}, deck.questions, {
         [questionId]: oldQuestions,
-        ...deck.questions
+        ...deck.questions,
       });
 
-      deck.questions = {...questions};      
+      deck.questions = { ...questions };
       decks[title] = undefined;
       delete decks[title];
 
@@ -111,9 +115,23 @@ export default function (state = initialState, action) {
         ...state,
         listOfDecks: {
           [title]: deck,
-          ...decks
-        }
-      }
+          ...decks,
+        },
+      };
+
+    case ADD_RESPONSE:
+      return {
+        ...state,
+        responses: {
+          [questionId]: response,
+          ...state.responses,
+        },
+      };
+    case CLEAR_RESPONSE:
+      return {
+        ...state,
+        responses: {},
+      };
     default:
       return state;
   }

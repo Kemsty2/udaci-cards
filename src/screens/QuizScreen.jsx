@@ -25,6 +25,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import Spinner from "../components/Loader";
 import { styles, cardStyle } from "./styles/QuizScreen.style";
 import CardFlip from "react-native-card-flip";
+import ProgressBar from "../components/ProgressBar";
 
 /**
  * Quiz View
@@ -79,25 +80,76 @@ class QuizScreen extends Component {
 
     this.state = {
       isReady: false,
+      showResult: false,
+      progress: 0,
     };
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.setState({
-        isReady: true,
-      });
-    }, 1000);
+    this._unsubscribe = this.props.navigation.addListener("focus", async () => {
+      await this.props.getDeck();
+    });
+    this.setState({
+      isReady: true,
+    });
+  }
+
+  componentWillUnmount() {
+    this._unsubscribe();
+    this.props.clearResponse();
   }
 
   flip = () => {
     this.card.flip();
   };
 
+  addResponse = (response) => {
+    const { route, addResponse, navigation, next } = this.props;
+    const { title } = route.params;
+
+    addResponse(response);
+    if (next !== null) {
+      navigation.navigate("Quiz", {
+        title,
+        questionId: next,
+      });
+    } else {
+      //  Show Answer
+      this.setState({
+        showResult: true,        
+      });
+      setTimeout(() => {
+        this.setState({
+          progress: 0.7
+        })
+      }, 1000)
+    }
+  };
+
   render() {
-    const { navigation } = this.props;
+    const {
+      navigation,
+      question,
+      status,
+      index,
+      previous,
+      next,
+      total,
+      error,
+      route,
+      responses,
+    } = this.props;
+    const { title, questionId } = route.params;
+    const answer = responses[questionId];
+    const { showResult } = this.state;
+
+    console.log(responses[questionId]);
+    console.log(questionId);
 
     if (!this.state.isReady) {
+      return <Spinner color={light_dark} />;
+    }
+    if (status === "pending") {
       return <Spinner color={light_dark} />;
     }
 
@@ -111,32 +163,22 @@ class QuizScreen extends Component {
           >
             <Header span style={{ backgroundColor: "transparent" }}>
               <Left>
-                <Button transparent onPress={() => navigation.goBack()}>
+                <Button
+                  transparent
+                  onPress={() => navigation.navigate("Deck Details", { title })}
+                >
                   <Icon name="arrow-back" style={styles.iconBack} />
                 </Button>
               </Left>
               <Body style={styles.innerContainer}>
                 <Title style={styles.headerStyle}>
-                  Questions {1}
-                  <Text style={{ fontSize: 18, fontWeight: "400" }}>/{10}</Text>
+                  Questions {index + 1}
+                  <Text style={{ fontSize: 18, fontWeight: "400" }}>
+                    /{total}
+                  </Text>
                 </Title>
               </Body>
-              <Right>
-                <Button transparent>
-                  <Icon
-                    name="edit"
-                    type="FontAwesome5"
-                    style={styles.iconEdit}
-                  />
-                </Button>
-                <Button transparent>
-                  <Icon
-                    name="trash"
-                    type="FontAwesome5"
-                    style={styles.iconTrash}
-                  />
-                </Button>
-              </Right>
+              <Right />
             </Header>
           </LinearGradient>
           <View padder style={[styles.pContainer, styles.pContainerAlign]}>
@@ -146,11 +188,17 @@ class QuizScreen extends Component {
                 first
                 style={{
                   height: 50,
-                  backgroundColor: light_dark,
-                  borderColor: light_dark,
+                  backgroundColor:
+                    previous === null || showResult ? "#9e9e9e" : light_dark,
+                  borderColor:
+                    previous === null || showResult ? "#9e9e9e" : light_dark,
                   borderRightColor: white,
                   marginTop: 20,
                 }}
+                disabled={previous === null || showResult}
+                onPress={() =>
+                  navigation.navigate("Quiz", { questionId: previous, title })
+                }
               >
                 <Icon
                   ios="ios-arrow-back"
@@ -160,15 +208,21 @@ class QuizScreen extends Component {
                 {/* <Text style={{ color: white }}>Previous</Text> */}
               </Button>
               <Button
+                disabled={next === null || showResult}
                 transparent
                 last
                 style={{
                   height: 50,
-                  backgroundColor: light_dark,
-                  borderColor: light_dark,
+                  backgroundColor:
+                    next === null || showResult ? "#9e9e9e" : light_dark,
+                  borderColor:
+                    next === null || showResult ? "#9e9e9e" : light_dark,
                   borderRightColor: white,
                   marginTop: 20,
                 }}
+                onPress={() =>
+                  navigation.navigate("Quiz", { questionId: next, title })
+                }
               >
                 {/* <Text style={{ color: white }}>Next</Text> */}
                 <Icon
@@ -178,8 +232,9 @@ class QuizScreen extends Component {
                 />
               </Button>
             </Segment>
+
             <CardFlip
-              style={{ flex: 1, marginBottom: 30 }}
+              style={{ flex: showResult? 2 : 1, marginBottom: 30 }}
               ref={(card) => {
                 this.card = card;
               }}
@@ -187,88 +242,158 @@ class QuizScreen extends Component {
               <Item
                 icon={"ios-return-right"}
                 onPress={() => this.card.flip()}
-                question={"Does React Native Work on Android ?"}
+                question={question.question}
               />
               <Item
                 icon={"ios-return-left"}
                 onPress={() => this.card.flip()}
-                question={"YES!"}
+                question={question.answer}
                 answer={true}
               />
             </CardFlip>
 
             <View
               style={{
-                flex: 1,
+                flex: showResult? 0.7 : 1,
                 flexDirection: "row",
                 justifyContent: "space-evenly",
               }}
             >
-              <Button
-                iconLeft
-                style={{
-                  backgroundColor: "#00C851",
-                  justifyContent: "space-between",
-                  width: 150,
-                  paddingRight: 15,
-                  height: 50,
-                }}
-              >
-                <Icon name="ios-checkmark" style={{ fontWeight: "bold" }} />
-                <Text
-                  style={{
-                    color: white,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Correct
-                </Text>
-              </Button>
-              <Button
-                iconLeft
-                style={{
-                  backgroundColor: "#ff4444",
-                  justifyContent: "space-between",
-                  width: 150,
-                  paddingRight: 15,
-                  height: 50,
-                }}
-              >
-                <Icon
-                  name="ios-close"
-                  style={{ marginRight: 5, fontWeight: "bold" }}
-                />
-                <Text
-                  style={{
-                    color: white,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Incorrect
-                </Text>
-              </Button>
-
-              {/* <Button
-                iconLeft
-                style={{
-                  backgroundColor: light_dark,
-                  justifyContent: "space-between",
-                  width: 150,
-                  paddingRight: 15,
-                  height: 50,
-                }}
-              >
-                <Icon name="ios-refresh" style={{ fontWeight: "bold" }} />
-                <Text
-                  style={{
-                    color: white,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Restart
-                </Text>
-              </Button> */}
+              {showResult ? (
+                <>
+                  <Button
+                    iconLeft
+                    style={{
+                      backgroundColor: light_dark,
+                      justifyContent: "space-between",
+                      width: 150,
+                      paddingRight: 15,
+                      height: 50,
+                    }}
+                  >
+                    <Icon
+                      name="ios-arrow-back"
+                      style={{ fontWeight: "bold" }}
+                    />
+                    <Text
+                      style={{
+                        color: white,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Back to Details
+                    </Text>
+                  </Button>
+                  <Button
+                    iconLeft
+                    style={{
+                      backgroundColor: light_dark,
+                      justifyContent: "space-between",
+                      width: 150,
+                      paddingRight: 15,
+                      height: 50,
+                    }}
+                  >
+                    <Icon name="ios-refresh" style={{ fontWeight: "bold" }} />
+                    <Text
+                      style={{
+                        color: white,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Restart
+                    </Text>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    iconLeft
+                    disabled={answer !== undefined}
+                    style={{
+                      backgroundColor:
+                        answer !== undefined && !answer ? "#9e9e9e" : "#00C851",
+                      justifyContent: "space-between",
+                      width: 150,
+                      paddingRight: 15,
+                      height: 50,
+                    }}
+                    onPress={() => this.addResponse(true)}
+                  >
+                    <Icon
+                      name="ios-checkmark"
+                      style={{ fontWeight: "bold", fontSize: 30 }}
+                    />
+                    <Text
+                      style={{
+                        color: white,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Correct
+                    </Text>
+                  </Button>
+                  <Button
+                    disabled={answer !== undefined}
+                    iconLeft
+                    style={{
+                      backgroundColor:
+                        answer !== undefined && answer ? "#9e9e9e" : "#ff4444",
+                      justifyContent: "space-between",
+                      width: 150,
+                      paddingRight: 15,
+                      height: 50,
+                    }}
+                    onPress={() => this.addResponse(false)}
+                  >
+                    <Icon
+                      name="ios-close"
+                      style={{
+                        marginRight: 5,
+                        fontWeight: "bold",
+                        fontSize: 30,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        color: white,
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Incorrect
+                    </Text>
+                  </Button>
+                </>
+              )}
             </View>
+
+            {showResult ? <View style={{ flex: 1.3, marginBottom: 10 }}>
+              <Text
+                style={{
+                  color: light_dark,
+                  fontWeight: "bold",
+                  alignSelf: "center",
+                  flex: 1,
+                  fontSize: 20
+                }}
+              >
+                Your Score
+              </Text>
+              <ProgressBar
+                row
+                progress={this.state.progress}
+                duration={500}
+                height={30}
+                barColor={"#00C851"}
+              />
+              <ProgressBar
+                row
+                progress={this.state.progress}
+                duration={500}
+                height={30}
+                barColor={"#ff4444"}
+              />
+            </View>: null}
           </View>
         </Container>
       </SafeAreaView>
