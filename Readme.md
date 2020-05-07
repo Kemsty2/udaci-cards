@@ -67,7 +67,7 @@
 ```js
 {  
   title: 'Deck Title',
-  createdAt: new Date(),  
+  createdAt: new Date() 
 }
 ```
 
@@ -75,7 +75,7 @@
 
 ```js
 {  
-  id: 'Card Id'
+  id: 'Card Id',
   question: 'Card Question',
   answer: 'Card Answer'  
 }
