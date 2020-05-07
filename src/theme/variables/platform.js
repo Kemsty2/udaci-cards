@@ -136,7 +136,7 @@ export default {
 
   // Footer
   footerHeight: 55,
-  footerDefaultBg: platform === "ios" ? "#F8F8F8" : "#3F51B5",
+  footerDefaultBg: platform === "ios" ? "#F8F8F8" : "#141e30",
   footerPaddingBottom: 0,
 
   // FooterTab

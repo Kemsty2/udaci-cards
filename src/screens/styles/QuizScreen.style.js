@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { white, red, light_green } from "../../utils/colors";
+import {Platform} from "react-native"
 
 export const cardStyle = StyleSheet.create({
   card: {
@@ -109,16 +110,16 @@ export const styles = StyleSheet.create({
   },
   gradient: {},
   headerStyle: {
-    marginRight: 20,
+    marginRight: Platform.OS === "ios"? 20 : 50,
     color: white,
     fontWeight: "bold",
     fontSize: 24,
     textAlign: "center",
-    width: 200,
+    width: 200,    
   },
   innerContainer: {
-    flex: 2,
-    justifyContent: "flex-start",
+    flex: Platform.OS === "ios" ? 1 : 0.2,
+    justifyContent: "center",
   },
   pContainer: {
     borderTopColor: white,

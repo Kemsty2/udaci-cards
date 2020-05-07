@@ -38,7 +38,7 @@ export default function (state = initialState, action) {
     case SAVE_DECK:
       return {
         ...state,
-        listOfDecks: { [title]: action.deck, ...state.listOfDecks },
+        listOfDecks: { [action.deck.title]: action.deck, ...state.listOfDecks },
       };
     case DELETE_DECK:
       decks[title] = undefined;

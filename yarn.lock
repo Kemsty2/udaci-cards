@@ -2937,7 +2937,7 @@ expect@^25.4.0:
     jest-message-util "^25.4.0"
     jest-regex-util "^25.2.6"
 
-expo-asset@~8.1.0, expo-asset@~8.1.4:
+expo-asset@^8.1.4, expo-asset@~8.1.0, expo-asset@~8.1.4:
   version "8.1.4"
   resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-8.1.4.tgz#5265c28c1c279b2f9779269195bec4caf250ba5d"
   integrity sha512-6YqW22F5issD1rgqBCja8TCA2dr+yf/89FdYs/jhQYpw5OJAnAvfpK3GL8h3jRCu1TvxZqhH5NeLG6f2b3oUqg==
@@ -2995,7 +2995,7 @@ expo-location@~8.1.0:
   dependencies:
     invariant "^2.2.4"
 
-expo-permissions@~8.1.0:
+expo-permissions@^8.1.0, expo-permissions@~8.1.0:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-8.1.0.tgz#a7f2ee91ba76ce3a467e7b10adaa9ca5201b226f"
   integrity sha512-QBHD+1J9+sGFnhoEGzMRchPweeEE0OJ9ehG/0l1BMRBA7qsLS9vRC1FTJ55NwjI0Kr4RTha9r6ZX1kZHT09f/w==

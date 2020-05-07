@@ -1,10 +1,10 @@
 import { StyleSheet } from "react-native";
 import { white, light_dark } from "../../utils/colors";
+import {Platform} from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 15,
+    flex: 1,    
     backgroundColor: white,
   },
   gradient: {
@@ -12,9 +12,9 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
   },
   segment: {
-    backgroundColor: white,
+    backgroundColor: "transparent",
     marginBottom: 20,
-    shadowColor: light_dark,
+    /* shadowColor: light_dark,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.32,
     shadowRadius: 5.46,
 
-    elevation: 9,
+    elevation: 9, */
     height: 80,        
   },
   card: {
@@ -39,7 +39,7 @@ export const styles = StyleSheet.create({
     shadowRadius: 6.68,
 
     elevation: 11,
-    height: 100,
+    height: Platform.OS === "ios" ? 100 : 120,
     marginBottom: 20,
   },
   cardItem: {

@@ -5,13 +5,13 @@
     "name": "UdaciCards",
     "slug": "UdaciCards",
     "version": "1.0.0",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
-    "assetBundlePatterns": [
-      "**/*"
-    ]
+    "platforms": ["ios", "android", "web"],
+    "assetBundlePatterns": ["**/*"],    
+    "splash": {
+      "image": "./assets/splash.png",
+      "backgroundColor": "#141e30",
+      "resizeMode": "cover"
+    },
+    "icon": "./assets/icon.png"
   }
 }

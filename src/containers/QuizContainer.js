@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
-import QuizScreen from "../screens/QuizScreen.jsx";
-import {getDeck} from "../api"
+import QuizScreen from "../screens/QuizScreen";
+import { getDeck } from "../api";
 import { addResponse, clearResponse, setDeck } from "../redux/actions/decks";
 import { success, pending, failed } from "../redux/actions/messages";
 
@@ -21,25 +21,28 @@ const mapStateToProps = (state, { route }) => {
 
   return {
     status: state.message.status,
+    deck,
     question,
     next,
     previous,
     error: index !== -1,
     index,
     total: Object.values(deck.questions).length,
-    responses: state.deck.responses
+    responses: state.deck.responses,
+    showResult:
+      Object.values(deck.questions).length ===
+      Object.values(state.deck.responses).length,
   };
 };
 
 const mapDispatchToProps = (dispatch, { route }) => ({
   addResponse: (response) => {
     try {
-      const {questionId} = route.params
+      const { questionId } = route.params;
 
       dispatch(pending());
-      dispatch(addResponse(questionId, response))
+      dispatch(addResponse(questionId, response));
       dispatch(success());
-
     } catch (error) {
       dispatch(failed());
     }
@@ -47,21 +50,26 @@ const mapDispatchToProps = (dispatch, { route }) => ({
   clearResponse: () => {
     dispatch(clearResponse());
   },
-  getDeck: async () => {
+  getDeck: () => {
     try {
       const title = route.params.title;
 
       dispatch(pending());
 
-      const deck = await getDeck(title);
-      dispatch(setDeck(deck));
+      getDeck(title)
+        .then((deck) => {
+          dispatch(setDeck(deck));
 
-      dispatch(success());
+          dispatch(success());
+        })
+        .catch(() => {
+          dispatch(failed("An Error Occurred"));
+        });
     } catch (error) {
       console.log(error);
       dispatch(failed("An Error Occurred"));
     }
-  }
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(QuizScreen);
